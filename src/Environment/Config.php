@@ -56,6 +56,9 @@ class Config
      *
      * @return array
      * @throws FileSystemException
+     *
+     * @deprecated patch config storage has changed to the root composer.json. Method serves only for BC purpose.
+     * @see \Magento\CloudPatches\Composer\Config::getQualityPatches
      */
     public function getQualityPatches(): array
     {

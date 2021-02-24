@@ -92,6 +92,8 @@ class Apply extends AbstractCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $this->logger->info($this->magentoVersion->get());
+        $val = $_ENV['MAGENTO_CLOUD_APPLICATION'] ?? getenv('MAGENTO_CLOUD_APPLICATION');
+        $this->logger->info('MAGENTO_CLOUD_APPLICATION: ' . $val);
 
         try {
             $this->applyRequired->run($input, $output);

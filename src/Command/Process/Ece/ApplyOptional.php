@@ -11,6 +11,7 @@ use Magento\CloudPatches\Command\Process\Action\ActionPool;
 use Magento\CloudPatches\Command\Process\ProcessInterface;
 use Magento\CloudPatches\Environment\Config;
 use Magento\CloudPatches\Patch\FilterFactory;
+use Magento\CloudPatches\Composer\Config as ComposerConfig;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,24 +39,32 @@ class ApplyOptional implements ProcessInterface
     /**
      * @var Config
      */
-    private $config;
+    private $envConfig;
+
+    /**
+     * @var ComposerConfig
+     */
+    private $composerConfig;
 
     /**
      * @param FilterFactory $filterFactory
      * @param ActionPool $actionPool
      * @param LoggerInterface $logger
-     * @param Config $config
+     * @param Config $envConfig
+     * @param ComposerConfig $composerConfig
      */
     public function __construct(
         FilterFactory $filterFactory,
         ActionPool $actionPool,
         LoggerInterface $logger,
-        Config $config
+        Config $envConfig,
+        ComposerConfig $composerConfig
     ) {
         $this->filterFactory = $filterFactory;
         $this->actionPool = $actionPool;
         $this->logger = $logger;
-        $this->config = $config;
+        $this->envConfig = $envConfig;
+        $this->composerConfig = $composerConfig;
     }
 
     /**
@@ -63,8 +72,11 @@ class ApplyOptional implements ProcessInterface
      */
     public function run(InputInterface $input, OutputInterface $output)
     {
-        $envQualityPatches = $this->config->getQualityPatches();
-        $patchFilter = $this->filterFactory->createApplyFilter($envQualityPatches);
+        $envQualityPatches = $this->envConfig->getQualityPatches();
+        $composerQualityPatches = $this->composerConfig->getQualityPatches();
+        $patches = array_unique(array_merge($envQualityPatches, $composerQualityPatches));
+
+        $patchFilter = $this->filterFactory->createApplyFilter($patches);
         if ($patchFilter === null) {
             return;
         }
