@@ -17,7 +17,7 @@ class Config
     /**
      * Variable to define a Cloud environment.
      */
-    const ENV_VAR_CLOUD = 'MAGENTO_CLOUD_PROJECT';
+    const ENV_VAR_CLOUD = 'MAGENTO_CLOUD_APPLICATION';
 
     /**
      * Const is defined in ./bin/ece-patches
